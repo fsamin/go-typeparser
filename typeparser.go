@@ -169,6 +169,9 @@ type Field struct {
 }
 
 func (f Field) Tags() List {
+	if f.field.Tag == nil {
+		return List{}
+	}
 	tags := strings.Replace(f.field.Tag.Value, "`", "", 2)
 	return List(strings.Split(tags, " "))
 }
