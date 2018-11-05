@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"io/ioutil"
 	"strings"
 )
 
@@ -163,7 +164,8 @@ func (p Param) Type() string {
 }
 
 type Field struct {
-	field *ast.Field
+	field  *ast.Field
+	goType string
 }
 
 func (f Field) Tags() List {
@@ -196,9 +198,18 @@ func (f Field) Name() string {
 	return f.field.Names[0].Name
 }
 
+func (f Field) Type() string {
+	return f.goType
+}
+
 func Parse(filename string) ([]Type, error) {
+	src, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
 	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
+	f, err := parser.ParseFile(fset, "", src, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
@@ -233,8 +244,10 @@ func Parse(filename string) ([]Type, error) {
 		t.strct, ok = typeSpec.Type.(*ast.StructType)
 		if ok {
 			for _, f := range t.strct.Fields.List {
+				start, end := f.Type.Pos()-1, f.Type.End()-1
 				t.fields = append(t.fields, Field{
-					field: f,
+					field:  f,
+					goType: string(src[start:end]),
 				})
 			}
 		} else {

@@ -28,6 +28,7 @@ func TestParse(t *testing.T) {
 	assert.EqualValues(t, []string{"FieldA", "FieldB"}, t1.FieldNames())
 
 	assert.NotEmpty(t, t1.Field("FieldA").Tags())
+	assert.Equal(t, "int", t1.Field("FieldA").Type())
 	assert.EqualValues(t, []string{"tag:\"value,option\"", "json:\"-\""}, t1.Field("FieldA").Tags())
 	assert.EqualValues(t, []string{"value", "option"}, t1.Field("FieldA").TagValue("tag"))
 
