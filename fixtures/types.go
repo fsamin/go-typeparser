@@ -7,6 +7,7 @@ func main() {}
 type TypeA struct {
 	FieldA int  `tag:"value,option" json:"-"`
 	FieldB bool `tag:"value,option"`
+	FieldC *TypeA
 }
 
 //InterfaceA Comment

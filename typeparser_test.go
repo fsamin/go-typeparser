@@ -25,12 +25,16 @@ func TestParse(t *testing.T) {
 	assert.NotEmpty(t, t1.FieldNames())
 	assert.NotEmpty(t, t1.Fields())
 
-	assert.EqualValues(t, []string{"FieldA", "FieldB"}, t1.FieldNames())
+	assert.EqualValues(t, []string{"FieldA", "FieldB", "FieldC"}, t1.FieldNames())
 
+	assert.Equal(t, "main", t1.Package())
 	assert.NotEmpty(t, t1.Field("FieldA").Tags())
 	assert.Equal(t, "int", t1.Field("FieldA").Type())
 	assert.EqualValues(t, []string{"tag:\"value,option\"", "json:\"-\""}, t1.Field("FieldA").Tags())
 	assert.EqualValues(t, []string{"value", "option"}, t1.Field("FieldA").TagValue("tag"))
+
+	assert.Empty(t, t1.Field("FieldC").Tags())
+	assert.Equal(t, "*TypeA", t1.Field("FieldC").Type())
 
 	assert.Len(t, types, 2)
 
@@ -55,5 +59,4 @@ func TestParse(t *testing.T) {
 	assert.Equal(t, "string", t2.Method("foo").Results()[0].Type())
 	assert.Equal(t, "error", t2.Method("foo").Results()[1].Type())
 	assert.EqualValues(t, []string{"string", "error"}, t2.Method("foo").ResultTypes())
-
 }

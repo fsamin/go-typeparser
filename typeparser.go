@@ -10,13 +10,14 @@ import (
 )
 
 type Type struct {
-	file    *ast.File
-	docs    []string
-	spec    *ast.TypeSpec
-	strct   *ast.StructType
-	iface   *ast.InterfaceType
-	fields  []Field
-	methods []Method
+	file        *ast.File
+	packageName string
+	docs        []string
+	spec        *ast.TypeSpec
+	strct       *ast.StructType
+	iface       *ast.InterfaceType
+	fields      []Field
+	methods     []Method
 }
 
 func (t Type) IsConcrete() bool {
@@ -25,6 +26,10 @@ func (t Type) IsConcrete() bool {
 
 func (t Type) IsInterface() bool {
 	return t.iface != nil
+}
+
+func (t Type) Package() string {
+	return t.packageName
 }
 
 func (t Type) Name() string {
@@ -221,7 +226,8 @@ func Parse(filename string) ([]Type, error) {
 
 	for _, d := range f.Decls {
 		t := Type{
-			file: f,
+			file:        f,
+			packageName: f.Name.Name,
 		}
 
 		gen, ok := d.(*ast.GenDecl)
